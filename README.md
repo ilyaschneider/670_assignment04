@@ -24,7 +24,7 @@ setwd("G:/MPP/Fall 2022/PPOL 670/assignment04")
 
 Making new variables
 ```{r}
-data <- mutate(data, race_groups = 
+data <- mutate(data, racial_category = 
            case_when(
              RACE == 1 ~ "White",
              RACE == 2 ~ "Black/African American",
@@ -62,63 +62,74 @@ options(scipen=999)
 data %>%
   filter(!is.na(EDUCD) & AGE >= 18 & INCTOT > 0 & INCTOT < 9999999 & STATEFIP == 04)%>%
   ggplot() +
-  geom_point(aes(x = years_educ, y = INCTOT), color = "red", alpha = 0.05) +
+  geom_point(aes(x = years_educ, y = INCTOT), color = "red", alpha = 0.2) +
   geom_smooth(aes(x = years_educ, y = INCTOT), linetype = "longdash") +
   scale_y_log10() +
   labs(
     title = "Income and Educational Attainment of Working Age Adults, Arizona, 2019",
     subtitle = "As educational attainment increases, income also grows, at an increasing rate.",
-    caption = "Steven Ruggles, et. al. IPUMS USA: Version 10.0 [dataset]. Minneapolis, MN: IPUMS, 2020. https://doi.org/10.18128/D010.V10.0",
+    caption = "Steven Ruggles, et. al. IPUMS USA: Version 10.0 [dataset]. Minneapolis,\nMN: IPUMS, 2020. https://doi.org/10.18128/D010.V10.0",
     x = "Years of education",
-    y = "Log of individual income in USD"
-)
+    y = "Log of individual annual income in USD"
+  )
 ```
 
-### Poverty Rate by Race, Arizona, 2019
+### Percentage of Population in Poverty, by Race, Arizona, 2019
 ```{r}
 data %>%
   filter(OFFPOV != 9, STATEFIP == 04) %>%
-  group_by(race_groups) %>%
+  group_by(racial_category) %>%
   summarize(prop_poverty = mean(OFFPOV)) %>%
-  ggplot(mapping = aes(x = race_groups, y = prop_poverty, fill = race_groups)) +
+  ggplot(mapping = aes(x = racial_category, y = prop_poverty, fill = racial_category)) +
   geom_col() +
   geom_text(aes(label = round(prop_poverty, digits = 4)), vjust = -.4, size = 3, fontface = "bold") +
   theme(axis.text.x = element_blank()) +
   labs(
     title = "Percentage of Population in Poverty, by Race, Arizona, 2019",
-    subtitle = "Whites and Asians have the lowest poverty rates, while American Indians have the highest.",
-    caption = "Steven Ruggles, et. al. IPUMS USA: Version 10.0 [dataset]. Minneapolis, MN: IPUMS, 2020. https://doi.org/10.18128/D010.V10.0",
+    subtitle = "Whites, Asians, and Pacific Islanders have the lowest poverty rates, while American\nIndians have the highest.",
+    caption = "Steven Ruggles, et. al. IPUMS USA: Version 10.0 [dataset].\nMinneapolis, MN: IPUMS, 2020.\nhttps://doi.org/10.18128/D010.V10.0",
     x = "Race",
     y = "Proportion of population in poverty",
     fill = 'Race'
   )
 ```
 
-### Visual #3
+### Total Income of Working Age Adults, by Gender, Arizona, 2019
 ```{r}
 data %>%
-  filter(INCTOT > 0 & INCTOT < 9999999 & STATEFIP == 04 & AGE >= 18) %>%
-  ggplot(aes(x = INCTOT, y = factor(1))) +
-  geom_point(alpha = .01, size = 5) +
-  labs(y = NULL) +
-  scale_x_continuous() +
-  scale_y_discrete(labels = NULL)
-#maybe make this a histogram
-```
-
-### Visual 4
-```{r}
-data %>%
-  filter(INCTOT > 0 & INCTOT < 9999999 & STATEFIP == 04 & AGE >= 18) %>%
+  filter(INCTOT > 0 & INCTOT < 9999999 & STATEFIP == 04 & AGE >= 18 & years_educ <= 12) %>%
   mutate(
-    sex1 = if_else(
+    Gender = if_else(
       condition = SEX == 1,
       true = "Male", false = "Female"
     )
   ) %>%
-  ggplot(aes(x = sex1, y = INCTOT)) +
-  geom_boxplot() +
-  scale_y_log10()
+  ggplot(aes(x = INCTOT, y = factor(1), shape = Gender, color = Gender)) +
+  geom_point(alpha = .1, size = 5) +
+  scale_x_continuous() +
+  scale_y_discrete(labels = NULL) +
+  labs(
+    title = "Total Income of Working Age Adults, by Gender, Arizona, 2019",
+    subtitle = "Most of the population earns below $250,000, and men are more likely than women to\nhave high enough incomes to be outliers.",
+    caption = "Steven Ruggles, et. al. IPUMS USA: Version 10.0 [dataset]. Minneapolis,\nMN: IPUMS, 2020. https://doi.org/10.18128/D010.V10.0",
+    x = "Total annual individual income in USD",
+    y = NULL
+    )
+```
 
-
-
+### Income Distribution of Working Age Adults, by Race, Arizona, 2019
+```{r}
+labels <- c('American Indian\nor Alaska Native', 'Black/African\nAmerican', 'Chinese or\nJapanese', 'Other', 'Other Asian or\nPacific Islander', 'White')
+data %>%
+  filter(INCTOT > 0 & INCTOT < 9999999 & STATEFIP == 04 & AGE >= 18) %>%
+  ggplot(aes(x = racial_category, y = INCTOT)) +
+  geom_boxplot(color = "dark blue", fill = "light blue") +
+  scale_x_discrete(labels = labels) +
+  labs(
+    title = "Income Distribution of Working Age Adults, by Race, Arizona, 2019",
+    subtitle = "Asians and Pacific Islanders have the the widest interquartile ranges, while\nAmerican Indians have the narrowest, despite having many outlying high-earners.",
+    caption = "Steven Ruggles, et. al. IPUMS USA: Version 10.0 [dataset]. Minneapolis,\nMN: IPUMS, 2020. https://doi.org/10.18128/D010.V10.0",
+    x = "Race",
+    y = "Individual annual income in USD"
+  )
+```
