@@ -72,3 +72,22 @@ data %>%
     y = "Log of individual income in USD"
 )
 ```
+###Poverty Rate by Race, Arizona, 2019
+```{r}
+data %>%
+  filter(OFFPOV != 9, STATEFIP == 04) %>%
+  group_by(race_groups) %>%
+  summarize(prop_poverty = mean(OFFPOV)) %>%
+  ggplot(mapping = aes(x = race_groups, y = prop_poverty, fill = race_groups)) +
+  geom_col() +
+  geom_text(aes(label = round(prop_poverty, digits = 4)), vjust = -.3) +
+  theme(axis.text.x = element_blank()) +
+  labs(
+    title = "Percentage of Population in Poverty, by Race, Arizona, 2019",
+    subtitle = "Whites and Asians have the lowest poverty rates, while American Indians have the highest.",
+    caption = "Steven Ruggles, et. al. IPUMS USA: Version 10.0 [dataset]. Minneapolis, MN: IPUMS, 2020. https://doi.org/10.18128/D010.V10.0",
+    x = "Race",
+    y = "Proportion of population in poverty",
+    fill = 'Race'
+  )
+```
