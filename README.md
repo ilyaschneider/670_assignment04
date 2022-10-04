@@ -19,6 +19,7 @@ library(ipumsr)
 setwd("G:/MPP/Fall 2022/PPOL 670/assignment04/data")
 ddi <- read_ipums_ddi("usa_00002.xml")
 data <- read_ipums_micro(ddi)
+setwd("G:/MPP/Fall 2022/PPOL 670/assignment04")
 ```
 
 Making new variables
@@ -55,14 +56,14 @@ data <- mutate(data, years_educ =
 ```
 
 
-###Income and Educational Attainment of Working Age Adults, Arizona, 2019
+### Income and Educational Attainment of Working Age Adults, Arizona, 2019
 ```{r}
 options(scipen=999)
 data %>%
   filter(!is.na(EDUCD) & AGE >= 18 & INCTOT > 0 & INCTOT < 9999999 & STATEFIP == 04)%>%
   ggplot() +
   geom_point(aes(x = years_educ, y = INCTOT), color = "red", alpha = 0.05) +
-  geom_smooth(aes(x = years_educ, y = INCTOT)) +
+  geom_smooth(aes(x = years_educ, y = INCTOT), linetype = "longdash") +
   scale_y_log10() +
   labs(
     title = "Income and Educational Attainment of Working Age Adults, Arizona, 2019",
@@ -72,7 +73,8 @@ data %>%
     y = "Log of individual income in USD"
 )
 ```
-###Poverty Rate by Race, Arizona, 2019
+
+### Poverty Rate by Race, Arizona, 2019
 ```{r}
 data %>%
   filter(OFFPOV != 9, STATEFIP == 04) %>%
@@ -80,7 +82,7 @@ data %>%
   summarize(prop_poverty = mean(OFFPOV)) %>%
   ggplot(mapping = aes(x = race_groups, y = prop_poverty, fill = race_groups)) +
   geom_col() +
-  geom_text(aes(label = round(prop_poverty, digits = 4)), vjust = -.3) +
+  geom_text(aes(label = round(prop_poverty, digits = 4)), vjust = -.4, size = 3, fontface = "bold") +
   theme(axis.text.x = element_blank()) +
   labs(
     title = "Percentage of Population in Poverty, by Race, Arizona, 2019",
@@ -91,3 +93,32 @@ data %>%
     fill = 'Race'
   )
 ```
+
+### Visual #3
+```{r}
+data %>%
+  filter(INCTOT > 0 & INCTOT < 9999999 & STATEFIP == 04 & AGE >= 18) %>%
+  ggplot(aes(x = INCTOT, y = factor(1))) +
+  geom_point(alpha = .01, size = 5) +
+  labs(y = NULL) +
+  scale_x_continuous() +
+  scale_y_discrete(labels = NULL)
+#maybe make this a histogram
+```
+
+### Visual 4
+```{r}
+data %>%
+  filter(INCTOT > 0 & INCTOT < 9999999 & STATEFIP == 04 & AGE >= 18) %>%
+  mutate(
+    sex1 = if_else(
+      condition = SEX == 1,
+      true = "Male", false = "Female"
+    )
+  ) %>%
+  ggplot(aes(x = sex1, y = INCTOT)) +
+  geom_boxplot() +
+  scale_y_log10()
+
+
+
