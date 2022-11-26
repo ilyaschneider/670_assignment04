@@ -82,3 +82,22 @@ data %>%
 ```
 
 This strip chart highlights income distribution by gender of adults in Arizona using 2019 income data. It shows that men are more likely than women to be the highest earners, as well as that the bulk of observations of male income is slightly higher than that of women. The graph also shows that the vast majority of individuals in the population earn below $250,000 annually, and that only singular individuals earn above $400,000. Given this disparity income between male and female individuals, policy can be pursued that encourages women to pursue higher paying jobs, and firms to hire more women for those higher paying jobs. Policy can be made to lower this gap, depending on the reason behind the disparity, such as improved access to education and training for women, or better maternal leave.
+
+### Income Distribution of Working Age Adults, by Race, Arizona, 2019
+```{r}
+labels <- c('American Indian\nor Alaska Native', 'Black/African\nAmerican', 'Chinese or\nJapanese', 'Other', 'Other Asian or\nPacific Islander', 'White')
+data %>%
+  filter(INCTOT > 0 & INCTOT < 9999999 & STATEFIP == 04 & AGE >= 18) %>%
+  ggplot(aes(x = racial_category, y = INCTOT)) +
+  geom_boxplot(color = "dark blue", fill = "light blue") +
+  scale_x_discrete(labels = labels) +
+  scale_y_log10() +
+  labs(
+    title = "Income Distribution of Working Age Adults, by Race, Arizona, 2019",
+    subtitle = "Asians and Pacific Islanders have the the widest interquartile ranges, while\nAmerican Indians have the narrowest, despite having many outlying high-earners.",
+    caption = "Steven Ruggles, et. al. IPUMS USA: Version 10.0 [dataset]. Minneapolis,\nMN: IPUMS, 2020. https://doi.org/10.18128/D010.V10.0",
+    x = "Race",
+    y = "Log of individual annual income in USD"
+  )
+```
+This boxplot illustrates the income distribution of adults, whose annual income is greater than $0, in Arizona in 2019, this time by race. We can see that Asians and Pacific Islanders have the highest interquartile ranges, with Whites falling close behind. At the same time, the interquartile range of income is lowest for Black/African American and American Indian/Alaska Native workers, as well as those who do not explicitly belong to any of the racial categories. We can also see that Whites have the most extreme outliers in terms of income on both ends of the distribution. When taking the racial disparity into account, we can suggest that policy that aims to increase incomes be targeted directly at Blacks, American Indians, and those of an unclassified race.
