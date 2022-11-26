@@ -17,10 +17,10 @@ library(ggplot2)
 library(ipumsr)
 
 #Changing the working directory to import the data
-setwd("G:/MPP/Fall 2022/PPOL 670/assignment04/data")
+setwd("F:/MPP/Fall 2022/PPOL 670/assignment04/data")
 ddi <- read_ipums_ddi("usa_00002.xml")
 data <- read_ipums_micro(ddi)
-setwd("G:/MPP/Fall 2022/PPOL 670/assignment04")
+setwd("F:/MPP/Fall 2022/PPOL 670/assignment04")
 options(scipen=999)
 ```
 
