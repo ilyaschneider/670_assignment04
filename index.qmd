@@ -100,4 +100,48 @@ data %>%
     y = "Log of individual annual income in USD"
   )
 ```
+
 This boxplot illustrates the income distribution of adults, whose annual income is greater than $0, in Arizona in 2019, this time by race. We can see that Asians and Pacific Islanders have the highest interquartile ranges, with Whites falling close behind. At the same time, the interquartile range of income is lowest for Black/African American and American Indian/Alaska Native workers, as well as those who do not explicitly belong to any of the racial categories. We can also see that Whites have the most extreme outliers in terms of income on both ends of the distribution. When taking the racial disparity into account, we can suggest that policy that aims to increase incomes be targeted directly at Blacks, American Indians, and those of an unclassified race.
+
+
+### Percentage of Population in Poverty, by Race, Arizona, 2019
+```{r}
+data %>%
+  filter(OFFPOV != 9, STATEFIP == 04) %>%
+  group_by(racial_category) %>%
+  summarize(prop_poverty = mean(OFFPOV)) %>%
+  ggplot(mapping = aes(x = racial_category, y = prop_poverty, fill = racial_category)) +
+  geom_col() +
+  geom_text(aes(label = round(prop_poverty, digits = 4)), vjust = -.4, size = 3, fontface = "bold") +
+  theme(axis.text.x = element_blank()) +
+  labs(
+    title = "Percentage of Population in Poverty, by Race, Arizona, 2019",
+    subtitle = "Whites, Asians, and Pacific Islanders have the lowest poverty rates, while American\nIndians have the highest.",
+    caption = "Steven Ruggles, et. al. IPUMS USA: Version 10.0 [dataset].\nMinneapolis, MN: IPUMS, 2020.\nhttps://doi.org/10.18128/D010.V10.0",
+    x = "Race",
+    y = "Proportion of population in poverty",
+    fill = 'Race'
+  )
+```
+
+This bar chart illustrates the poverty rate in Arizona by race in 2019, and provides results similar to those seen in the boxplot above: people identifying as White or Other Asian/Pacific Islander have lowest rates of poverty, with those identifying as Chinese or Japanese close behind. At the same time, those identifying as Black, as an unclassified race, and particularly American Indian/Alaska Native, have much higher poverty rates, with the latter group having a poverty rate of 30.84%. In combination with the boxplot, we can see that anti-poverty measures should be targeted primarily towards Black and American Indian communities. Such measures can be greater investments into public education to decrease long term poverty, or investments into public infrastructure in those particular communities.
+
+
+### Income and Educational Attainment of Working Age Adults, Arizona, 2019
+```{r}
+data %>%
+  filter(!is.na(EDUCD) & AGE >= 18 & INCTOT > 0 & INCTOT < 9999999 & STATEFIP == 04)%>%
+  ggplot() +
+  geom_point(aes(x = years_educ, y = INCTOT), color = "red", alpha = 0.2) +
+  geom_smooth(aes(x = years_educ, y = INCTOT), linetype = "longdash") +
+  scale_y_log10() +
+  labs(
+    title = "Income and Educational Attainment of Working Age Adults, Arizona, 2019",
+    subtitle = "As educational attainment increases, income also grows, at an increasing rate.",
+    caption = "Steven Ruggles, et. al. IPUMS USA: Version 10.0 [dataset]. Minneapolis,\nMN: IPUMS, 2020. https://doi.org/10.18128/D010.V10.0",
+    x = "Years of education",
+    y = "Log of individual annual income in USD"
+  )
+```
+
+This scatter-line plot shows the positive relationship between income and educational attainment for adults in Arizona, using 2019 individual-level income data. The graph demonstrates that particularly after 12 years of schooling - after getting a high school diploma - the certainty and magnitude of the relationship increase, showing that an extra year of schooling has a positive impact on earnings. With particularly low incomes and high poverty rates, we can attempt to provide those who struggle financially with a long term remedy: education. Investing into high school education and graduation, especially in Black and American Indian communities in Arizona, can increase the number of high-earning individuals in the overall population.
