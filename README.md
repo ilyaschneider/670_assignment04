@@ -1,7 +1,6 @@
 ---
 title: "README.md"
 author: "Ilya Schneider, Juan Reyes"
-date: "`r Sys.Date()`"
 output: html_document
 ---
 
