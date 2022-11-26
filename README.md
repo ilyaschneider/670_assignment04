@@ -143,3 +143,5 @@ data %>%
 ```
 
 This scatter-line plot shows the positive relationship between income and educational attainment for adults in Arizona, using 2019 individual-level income data. The graph demonstrates that particularly after 12 years of schooling - after getting a high school diploma - the certainty and magnitude of the relationship increase, showing that an extra year of schooling has a positive impact on earnings. With particularly low incomes and high poverty rates, we can attempt to provide those who struggle financially with a long term remedy: education. Investing into high school education and graduation, especially in Black and American Indian communities in Arizona, can increase the number of high-earning individuals in the overall population.
+
+[Website link](https://ilyaschneider.github.io/670_assignment04/)
